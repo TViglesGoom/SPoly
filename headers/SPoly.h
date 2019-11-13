@@ -1,4 +1,6 @@
 #ifndef SPOLY_VLADHUZ_SPOLY_H
 #define SPOLY_VLADHUZ_SPOLY_H
 
+
+
 #endif //SPOLY_VLADHUZ_SPOLY_H
