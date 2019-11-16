@@ -1,6 +1,6 @@
 #ifndef TEST_SPOLY_H
 #define TEST_SPOLY_H
-int test_insert(DataItem **poly);
-int test_search(DataItem **poly);
-int test_delete(DataItem **poly);
+int test_insert(Poly *poly);
+int test_search(Poly *poly);
+int test_delete(Poly *poly);
 #endif //TEST_SPOLY_H

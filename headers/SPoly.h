@@ -5,18 +5,23 @@
 #include <stdlib.h>
 #include "common.h"
 
-#define SIZE 20
+typedef struct {
+    DType coefficient;
+    IType degree;
+} PolyElem;
 
 typedef struct {
-    int data;
-    int key;
-} DataItem;
+    IType size;
+    IType count;
+    PolyElem** elements;
+} Poly;
 
 
-IType hashCode (IType key);
-DataItem *search(IType key, DataItem **hashArray);
-void insert(IType key, IType data, DataItem **hashArray);
-void delete(DataItem* item, DataItem **hashArray);
+Poly* createNewPoly(IType size);
+IType hashCode(IType degree, IType size);
+PolyElem* search(IType degree, Poly* poly);
+void insert(IType degree, DType coefficient, Poly* poly);
+void delete(PolyElem* item, Poly* poly);
 void display();
 
 #endif //SPOLY_VLADHUZ_SPOLY_H

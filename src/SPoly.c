@@ -1,75 +1,82 @@
 #include "../headers/SPoly.h"
 
 
-IType hashCode(IType key) {
-    return key % SIZE;
+Poly* createNewPoly(IType size) {
+    Poly* newPoly = malloc(sizeof(Poly));
+    newPoly->size = size;
+    newPoly->count = 0;
+    newPoly->elements = calloc(size, sizeof(PolyElem*));
+
+    return newPoly;
 }
 
-DataItem *search(IType key, DataItem **hashArray) {
+IType hashCode(IType degree, IType size) {
+    return degree % size;
+}
+
+PolyElem* search(IType degree, Poly *poly) {
     //get the hash
-    IType hashIndex = hashCode(key);
-
+    IType hashIndex = hashCode(degree, poly->size);
+    IType counter = 0;
     //move in array until an empty
-    while(hashArray[hashIndex] != NULL) {
+    while(poly->elements[hashIndex] != NULL && counter <= poly->count) {
 
-        if(hashArray[hashIndex]->key == key)
-            return hashArray[hashIndex];
-
+        if(poly->elements[hashIndex]->degree == degree)
+            return poly->elements[hashIndex];
         //go to next cell
         ++hashIndex;
-
+        ++counter;
         //wrap around the table
-        hashIndex %= SIZE;
+        hashIndex %= poly->size;
     }
 
     return NULL;
 }
 
-void insert(IType key, IType data, DataItem **hashArray) {
+void insert(IType degree, DType coefficient, Poly* poly) {
 
-    DataItem *item = (DataItem*) malloc(sizeof(DataItem));
-    item->data = data;
-    item->key = key;
-
+    PolyElem *item = malloc(sizeof(PolyElem));
+    item->coefficient = coefficient;
+    item->degree = degree;
     //get the hash
-    int hashIndex = hashCode(key);
+    int hashIndex = hashCode(degree, poly->size);
     //move in array until an empty or deleted cell
-    while(hashArray[hashIndex] != NULL && hashArray[hashIndex]->key != -1) {
+    while(poly->elements[hashIndex] != NULL) {
         //go to next cell
         ++hashIndex;
         //wrap around the table
-        hashIndex %= SIZE;
+        hashIndex %= poly->size;
 
     }
-
-    hashArray[hashIndex] = item;
+    poly->count += 1;
+    poly->elements[hashIndex] = item;
 }
 
-void delete(DataItem* item, DataItem **hashArray) {
+void delete(PolyElem* item, Poly* poly) {
     if (item == NULL) {
         return;
     }
-    int key = item->key;
+    int degree = item->degree;
     //get the hash
-    int hashIndex = hashCode(key);
+    int hashIndex = hashCode(degree, poly->size);
     //move in array until an empty
-    while(hashArray[hashIndex] != NULL) {
-        if(hashArray[hashIndex]->key == key) {
-            hashArray[hashIndex] = NULL;
+    while(poly->elements[hashIndex] != NULL) {
+        if(poly->elements[hashIndex]->degree == degree) {
+            poly->elements[hashIndex] = NULL;
         }
         //go to next cell
         ++hashIndex;
         //wrap around the table
-        hashIndex %= SIZE;
+        hashIndex %= poly->size;
     }
 }
 
-void display(DataItem **hashArray) {
+void display(Poly* poly) {
     int i = 0;
-    for(i = SIZE-1; i>-1; i--) {
+    for(i = poly->size - 1; i > -1; i--) {
 
-        if(hashArray[i] != NULL) {
-            printf("%d*x^%d", hashArray[i]->data, hashArray[i]->key);
+        if(poly->elements[i] != NULL) {
+            printf("%f*x^%d", poly->elements[i]->coefficient, poly->elements[i]->degree);
             if (i > 0) {
                 printf(" + ");
             } else {

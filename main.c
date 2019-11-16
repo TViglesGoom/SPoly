@@ -4,7 +4,7 @@
 
 
 int main() {
-    DataItem **poly1 = calloc(SIZE, sizeof(DataItem*));
+    Poly *poly1 = createNewPoly(3);
     printf("test insert - %d\n", test_insert(poly1));
     printf("test search - %d\n", test_search(poly1));
     display(poly1);

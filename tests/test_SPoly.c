@@ -1,27 +1,30 @@
 #include "../headers/SPoly.h"
+#define KEY1 35
+#define KEY2 54
+#define KEY3 0
 
-int test_insert(DataItem **poly) {
-    insert(35, 5, poly);
-    insert(55, -8, poly);
-    insert(0, 3, poly);
+int test_insert(Poly *poly) {
+    insert(KEY1, 5, poly);
+    insert(KEY2, -8, poly);
+    insert(KEY3, 3, poly);
     return 0;
 }
 
-int test_search(DataItem **poly) {
-    DataItem *temp = NULL;
-    temp = search(35, poly);
+int test_search(Poly *poly) {
+    Poly *temp = NULL;
+    temp = search(KEY1, poly);
     if (temp != NULL) {
 //        printf("%d, %d\n", temp->key, temp->data);
     } else {
         return -3;
     }
-    temp = search(55, poly);
+    temp = search(KEY2, poly);
     if (temp != NULL) {
 //        printf("%d, %d\n", temp->key, temp->data);
     } else {
         return -3;
     }
-    temp = search(0, poly);
+    temp = search(KEY3, poly);
     if (temp != NULL) {
 //        printf("%d, %d\n", temp->key, temp->data);
     } else {
@@ -36,11 +39,11 @@ int test_search(DataItem **poly) {
     return 0;
 }
 
-int test_delete(DataItem **poly) {
-    DataItem* item = search(35, poly);
+int test_delete(Poly *poly) {
+    Poly* item = search(KEY1, poly);
     delete(item, poly); // deleting existing item
     delete(item, poly); // deleting not existing item
-    item = search(35, poly);
+    item = search(KEY1, poly);
     delete(item, poly); // deleting NULL
     if (item != NULL) {
         return -5;
