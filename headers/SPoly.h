@@ -7,15 +7,16 @@
 
 #define SIZE 20
 
-struct DataItem {
+typedef struct {
     int data;
     int key;
-};
+} DataItem;
+
 
 IType hashCode (IType key);
-struct DataItem *search(IType key, struct DataItem **hashArray);
-void insert(IType key, IType data, struct DataItem **hashArray);
-void delete(struct DataItem* item, struct DataItem **hashArray);
+DataItem *search(IType key, DataItem **hashArray);
+void insert(IType key, IType data, DataItem **hashArray);
+void delete(DataItem* item, DataItem **hashArray);
 void display();
 
 #endif //SPOLY_VLADHUZ_SPOLY_H

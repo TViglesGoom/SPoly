@@ -4,7 +4,7 @@
 
 
 int main() {
-    struct DataItem **poly1 = calloc(SIZE, sizeof(struct DataItem*));
+    DataItem **poly1 = calloc(SIZE, sizeof(DataItem*));
     printf("test insert - %d\n", test_insert(poly1));
     printf("test search - %d\n", test_search(poly1));
     display(poly1);

@@ -5,7 +5,7 @@ IType hashCode(IType key) {
     return key % SIZE;
 }
 
-struct DataItem *search(IType key, struct DataItem **hashArray) {
+DataItem *search(IType key, DataItem **hashArray) {
     //get the hash
     IType hashIndex = hashCode(key);
 
@@ -25,9 +25,9 @@ struct DataItem *search(IType key, struct DataItem **hashArray) {
     return NULL;
 }
 
-void insert(IType key, IType data, struct DataItem **hashArray) {
+void insert(IType key, IType data, DataItem **hashArray) {
 
-    struct DataItem *item = (struct DataItem*) malloc(sizeof(struct DataItem));
+    DataItem *item = (DataItem*) malloc(sizeof(DataItem));
     item->data = data;
     item->key = key;
 
@@ -45,7 +45,7 @@ void insert(IType key, IType data, struct DataItem **hashArray) {
     hashArray[hashIndex] = item;
 }
 
-void delete(struct DataItem* item, struct DataItem **hashArray) {
+void delete(DataItem* item, DataItem **hashArray) {
     if (item == NULL) {
         return;
     }
@@ -64,7 +64,7 @@ void delete(struct DataItem* item, struct DataItem **hashArray) {
     }
 }
 
-void display(struct DataItem **hashArray) {
+void display(DataItem **hashArray) {
     int i = 0;
     for(i = SIZE-1; i>-1; i--) {
 
