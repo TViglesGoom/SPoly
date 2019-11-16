@@ -12,10 +12,10 @@ struct DataItem {
     int key;
 };
 
-DType hashCode (IType key);
-struct DataItem *search (IType key);
-void insert (IType key, IType data);
-struct DataItem* delete(struct DataItem* item);
+IType hashCode (IType key);
+struct DataItem *search(IType key, struct DataItem **hashArray);
+void insert(IType key, IType data, struct DataItem **hashArray);
+void delete(struct DataItem* item, struct DataItem **hashArray);
 void display();
 
 #endif //SPOLY_VLADHUZ_SPOLY_H

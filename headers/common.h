@@ -55,9 +55,9 @@ typedef DType (*R1RFunc)(DType);
 
 
 
-void* memzero(void* ptr, size_t n)
-{
-    memset(ptr, 0, n);
-}
+//void* memzero(void* ptr, size_t n)
+//{
+//    memset(ptr, 0, n);
+//}
 
 #endif /* __COMMON__ end */
