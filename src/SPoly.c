@@ -6,7 +6,7 @@ Poly* createNewPoly(IType size) {
     newPoly->size = size;
     newPoly->count = 0;
     newPoly->elements = calloc(size, sizeof(PolyElem*));
-
+    newPoly->sortedDegrees = (IType*)malloc(size*sizeof(IType));
     return newPoly;
 }
 
@@ -38,8 +38,21 @@ void insert(IType degree, DType coefficient, Poly* poly) {
     PolyElem *item = malloc(sizeof(PolyElem));
     item->coefficient = coefficient;
     item->degree = degree;
+
+    IType sortedIndex = poly->count;
+    for (IType i = 0; i < poly->count; i++) {
+        if (poly->sortedDegrees[i] > degree) {
+            sortedIndex = i;
+            break;
+        }
+    }
+    for (IType i = poly->count; i > sortedIndex; i--) {
+        poly->sortedDegrees[i] = poly->sortedDegrees[i-1];
+    }
+    poly->sortedDegrees[sortedIndex] = degree;
+
     //get the hash
-    int hashIndex = hashCode(degree, poly->size);
+    IType hashIndex = hashCode(degree, poly->size);
     //move in array until an empty or deleted cell
     while(poly->elements[hashIndex] != NULL) {
         //go to next cell
@@ -52,36 +65,15 @@ void insert(IType degree, DType coefficient, Poly* poly) {
     poly->elements[hashIndex] = item;
 }
 
-void delete(PolyElem* item, Poly* poly) {
-    if (item == NULL) {
-        return;
-    }
-    int degree = item->degree;
-    //get the hash
-    int hashIndex = hashCode(degree, poly->size);
-    //move in array until an empty
-    while(poly->elements[hashIndex] != NULL) {
-        if(poly->elements[hashIndex]->degree == degree) {
-            poly->elements[hashIndex] = NULL;
-        }
-        //go to next cell
-        ++hashIndex;
-        //wrap around the table
-        hashIndex %= poly->size;
-    }
-}
-
 void display(Poly* poly) {
-    int i = 0;
-    for(i = poly->size - 1; i > -1; i--) {
-
-        if(poly->elements[i] != NULL) {
-            printf("%f*x^%d", poly->elements[i]->coefficient, poly->elements[i]->degree);
-            if (i > 0) {
-                printf(" + ");
-            } else {
-                printf("\n");
-            }
+    IType i = 0;
+    for(i = poly->count - 1; i > -1; i--) {
+        IType degree = poly->sortedDegrees[i];
+        printf("%f*x^%d", search(degree, poly)->coefficient, degree);
+        if (i > 0) {
+            printf(" + ");
+        } else {
+            printf("\n");
         }
     }
 }

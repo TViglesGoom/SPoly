@@ -1,7 +1,7 @@
 #include "../headers/SPoly.h"
 #define KEY1 35
 #define KEY2 54
-#define KEY3 0
+#define KEY3 2
 
 int test_insert(Poly *poly) {
     insert(KEY1, 5, poly);
@@ -35,18 +35,6 @@ int test_search(Poly *poly) {
 //        printf("NULL passed\n");
     } else {
         return -4;
-    }
-    return 0;
-}
-
-int test_delete(Poly *poly) {
-    Poly* item = search(KEY1, poly);
-    delete(item, poly); // deleting existing item
-    delete(item, poly); // deleting not existing item
-    item = search(KEY1, poly);
-    delete(item, poly); // deleting NULL
-    if (item != NULL) {
-        return -5;
     }
     return 0;
 }
