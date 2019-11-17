@@ -14,6 +14,7 @@ int main() {
     printf("test unsub - %d\n", test_unsub(poly1));
     printf("test sub - %d\n", test_sub(poly1, poly2));
     printf("test mul - %d\n\n", test_mul());
-    printf("test divide - %d\n", test_divide());
+    printf("test divide - %d\n\n", test_divide());
+    printf("test mod - %d\n\n", test_mod());
     return 0;
 }

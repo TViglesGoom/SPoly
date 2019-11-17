@@ -84,3 +84,15 @@ IType test_divide() {
     display(divide(poly1, NULL, 2));
     return 0;
 }
+
+IType test_mod() {
+    Poly* poly1 = createNewPoly(3);
+    insert(2, 1, poly1);
+    insert(1, 4, poly1);
+    insert(0, 4, poly1);
+    Poly* poly2 = createNewPoly(2);
+    insert(1, 1, poly2);
+    insert(0, -2, poly2);
+    display(mod(poly1, poly2, 1));
+    return 0;
+}

@@ -34,6 +34,7 @@ Poly* sub(Poly* poly1, Poly* poly2);
 // number = 1 for plain multiplication, dividing, and taking module poly1[*/%]poly2
 // poly2 = NULL for poly1[*/%]number
 Poly* mul(Poly* poly1, Poly* poly2, DType number);
+Poly* divideAlgorithm(Poly* poly1, Poly* poly2, DType number, IType flag);
 Poly* divide(Poly* poly1, Poly* poly2, DType number);
 Poly* mod(Poly* poly1, Poly* poly2, DType number);
 

@@ -195,7 +195,7 @@ Poly* mul(Poly* poly1, Poly* poly2, DType number) {
     return newPoly;
 }
 
-Poly *divide(Poly *poly1, Poly *poly2, DType number) {
+Poly* divideAlgorithm(Poly *poly1, Poly *poly2, DType number, IType flag) {
     if (poly1 == NULL) {
         return NULL;
     }
@@ -219,9 +219,26 @@ Poly *divide(Poly *poly1, Poly *poly2, DType number) {
             free(temp2);
             tempDegree = temp->sortedDegrees[temp->count - 1];
         }
-        return mul(result, NULL, 1 / number);
+        if (flag) {
+            return mul(result, NULL, 1 / number);
+        }
+        return temp;
     } else {
-        return mul(poly1, NULL, 1 / number);
+        if (flag) {
+            return mul(poly1, NULL, 1 / number);
+        }
+        Poly* mod = createNewPoly(1);
+        insert(0, 0, mod);
+        return mod;
     }
 
 }
+
+Poly* divide(Poly* poly1, Poly* poly2, DType number) {
+    return divideAlgorithm(poly1, poly2, number, 1);
+}
+
+Poly* mod(Poly* poly1, Poly* poly2, DType number) {
+    return divideAlgorithm(poly1, poly2, number, 0);
+}
+
