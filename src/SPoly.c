@@ -162,6 +162,9 @@ Poly* unsub(Poly* poly) {
         degree = poly->sortedDegrees[c];
         insert(degree, -1*search(degree, poly)->coefficient, newPoly);
     }
-    printf("\n");
     return newPoly;
+}
+
+Poly* sub(Poly* poly1, Poly* poly2) {
+    return add(poly1, unsub(poly2));
 }
