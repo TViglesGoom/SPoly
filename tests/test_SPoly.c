@@ -7,7 +7,7 @@
 #define VALUE2 -8
 #define VALUE3 3
 
-int test_insert(Poly *poly) {
+IType test_insert(Poly *poly) {
     insert(KEY1, VALUE1, poly);
     insert(KEY2, VALUE2, poly);
     insert(KEY3, VALUE3, poly);
@@ -15,7 +15,7 @@ int test_insert(Poly *poly) {
     return 0;
 }
 
-int test_search(Poly *poly) {
+IType test_search(Poly *poly) {
     PolyElem *temp;
     temp = search(KEY1, poly);
     if (temp == NULL || temp->coefficient != VALUE1) {
@@ -36,11 +36,16 @@ int test_search(Poly *poly) {
     return 0;
 }
 
-int test_add(Poly* poly1, Poly* poly2) {
+IType test_add(Poly* poly1, Poly* poly2) {
     if (poly2->sortedDegrees[0] != 0) {
-        insert(0, 4, poly2);
+        insert(0, -3, poly2);
     }
     insert(KEY1, VALUE2, poly2);
     display(add(poly1, poly2));
+    return 0;
+}
+
+IType test_unsub(Poly* poly) {
+    display(unsub(poly));
     return 0;
 }

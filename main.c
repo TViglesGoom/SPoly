@@ -11,6 +11,7 @@ int main() {
     Poly* poly2 = generate(6, 4);
     display(poly2);
     printf("test add - %d\n", test_add(poly1, poly2));
+    printf("test unsub - %d\n", test_unsub(poly1));
 
     return 0;
 }

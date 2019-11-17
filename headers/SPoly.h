@@ -37,4 +37,6 @@ Poly* mul(Poly* poly1, Poly* poly2, DType number);
 Poly* divide(Poly* poly1, Poly* poly2, DType number);
 Poly* mod(Poly* poly1, Poly* poly2, DType number);
 
+Poly* unsub(Poly* poly);
+
 #endif //SPOLY

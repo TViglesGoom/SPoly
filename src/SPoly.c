@@ -99,6 +99,34 @@ void display(Poly* poly) {
     }
 }
 
+IType* createUnion(const IType* arr1, const IType* arr2, IType m, IType n, IType* size) {
+    IType* unionOfArrays = malloc((m+n) * sizeof(IType));
+    IType i = 0, j = 0, unionSize = 0;
+    while (i < m && j < n) {
+        if (arr1[i] < arr2[j])
+            unionOfArrays[unionSize++] = arr1[i++];
+        else if (arr2[j] < arr1[i])
+            unionOfArrays[unionSize++] = arr2[j++];
+        else {
+            unionOfArrays[unionSize++] = arr2[j++];
+            i++;
+        }
+    }
+    /* Print remaining elements of the larger array */
+    while(i < m)
+        unionOfArrays[unionSize++] = arr1[i++];
+    while(j < n)
+        unionOfArrays[unionSize++] = arr2[j++];
+    IType* sizedUnion = malloc(unionSize* sizeof(IType));
+    for (IType ind = 0; ind < unionSize; ind++) {
+        sizedUnion[ind] = unionOfArrays[ind];
+    }
+    free(unionOfArrays);
+    *size = unionSize;
+    return sizedUnion;
+}
+
+
 Poly* add(Poly* poly1, Poly* poly2) {
     IType unionSize;
     IType* tempArray = createUnion(poly1->sortedDegrees, poly2->sortedDegrees,
@@ -126,29 +154,12 @@ Poly* add(Poly* poly1, Poly* poly2) {
     return newPoly;
 }
 
-IType* createUnion(const IType* arr1, const IType* arr2, IType m, IType n, IType* size) {
-    IType* unionOfArrays = malloc((m+n) * sizeof(IType));
-    IType i = 0, j = 0, unionSize = 0;
-    while (i < m && j < n) {
-        if (arr1[i] < arr2[j])
-            unionOfArrays[unionSize++] = arr1[i++];
-        else if (arr2[j] < arr1[i])
-            unionOfArrays[unionSize++] = arr2[j++];
-        else {
-            unionOfArrays[unionSize++] = arr2[j++];
-            i++;
-        }
+Poly* unsub(Poly* poly) {
+    Poly* newPoly = createNewPoly(poly->count);
+    IType degree;
+    for (IType c = 0; c < poly->count; c++) {
+        degree = poly->sortedDegrees[c];
+        insert(degree, -1*search(degree, poly)->coefficient, newPoly);
     }
-    /* Print remaining elements of the larger array */
-    while(i < m)
-        unionOfArrays[unionSize++] = arr1[i++];
-    while(j < n)
-        unionOfArrays[unionSize++] = arr2[j++];
-    IType* sizedUnion = malloc(unionSize* sizeof(IType));
-    for (IType ind = 0; ind < unionSize; ind++) {
-        sizedUnion[ind] = unionOfArrays[ind];
-    }
-    free(unionOfArrays);
-    *size = unionSize;
-    return sizedUnion;
+    return newPoly;
 }
