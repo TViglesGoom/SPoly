@@ -62,7 +62,7 @@ void insertDegree(IType degree, Poly* poly) {
 
 void insert(IType degree, DType coefficient, Poly* poly) {
     if (poly->count >= poly->size) {
-        printf("MAX POLY SIZE REACHED");
+//        printf("MAX POLY SIZE REACHED");
         return;
     }
     if (search(degree, poly) != NULL) {
@@ -193,4 +193,35 @@ Poly* mul(Poly* poly1, Poly* poly2, DType number) {
         }
     }
     return newPoly;
+}
+
+Poly *divide(Poly *poly1, Poly *poly2, DType number) {
+    if (poly1 == NULL) {
+        return NULL;
+    }
+    if (poly2 != NULL) {
+        Poly *temp = createNewPoly(poly1->size);
+        memcpy(temp, poly1, sizeof(Poly));
+        Poly *result = createNewPoly(
+                poly1->sortedDegrees[poly1->count - 1] - poly2->sortedDegrees[poly2->count - 1] + 1);
+
+        IType tempDegree, poly2Degree, resDegree;
+        DType resCoefficient;
+        tempDegree = temp->sortedDegrees[temp->count - 1];
+        poly2Degree = poly2->sortedDegrees[poly2->count - 1];
+        while (tempDegree >= poly2Degree) {
+            resDegree = tempDegree - poly2Degree;
+            resCoefficient = search(tempDegree, temp)->coefficient / search(poly2Degree, poly2)->coefficient;
+            insert(resDegree, resCoefficient, result);
+            Poly *temp2 = createNewPoly(1);
+            insert(resDegree, resCoefficient, temp2);
+            memcpy(temp, sub(temp, mul(poly2, temp2, 1)), sizeof(Poly));
+            free(temp2);
+            tempDegree = temp->sortedDegrees[temp->count - 1];
+        }
+        return mul(result, NULL, 1 / number);
+    } else {
+        return mul(poly1, NULL, 1 / number);
+    }
+
 }
