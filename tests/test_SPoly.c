@@ -55,3 +55,19 @@ IType test_sub(Poly* poly1, Poly* poly2) {
     return 0;
 }
 
+IType test_mul() {
+    Poly* poly1 = createNewPoly(2);
+    Poly* poly2 = createNewPoly(3);
+    insert(0, 3, poly1);
+    insert(2, 2, poly1);
+    insert(7, 4, poly2);
+    insert(5, 3, poly2);
+    insert(1, -9, poly2);
+    printf("MULTIPLICATION TESTS\n");
+    display(mul(poly1, poly2, 1));
+    display(mul(poly1, poly2, 3));
+    display(mul(poly1, poly2, -5));
+    display(mul(poly2, NULL, -5));
+    display(mul(NULL, NULL, -5));
+    printf("\n\n");
+}

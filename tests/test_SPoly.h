@@ -5,4 +5,5 @@ IType test_search(Poly *poly);
 IType test_add(Poly* poly1, Poly* poly2);
 IType test_unsub(Poly* poly);
 IType test_sub(Poly* poly1, Poly* poly2);
+IType test_mul();
 #endif //TEST_SPOLY_H

@@ -65,6 +65,10 @@ void insert(IType degree, DType coefficient, Poly* poly) {
         printf("MAX POLY SIZE REACHED");
         return;
     }
+    if (search(degree, poly) != NULL) {
+//        printf("ELEMENT WITH THIS DEGREE ALREADY IS IN POLY");
+        return;
+    }
     PolyElem *item = malloc(sizeof(PolyElem));
     item->coefficient = coefficient;
     item->degree = degree;
@@ -90,7 +94,7 @@ void display(Poly* poly) {
         degree = poly->sortedDegrees[i];
         coefficient = search(degree, poly)->coefficient;
         if (i < poly->count - 1) {
-            printf(coefficient < 0 ? " + " : " - ");
+            printf(coefficient > 0 ? " + " : " - ");
         }
         printf("%.1f", (coefficient > 0 || i == poly->count - 1 ? 1 : -1) * coefficient);
         if (degree != 0) {
@@ -126,7 +130,6 @@ IType* createUnion(const IType* arr1, const IType* arr2, IType m, IType n, IType
     *size = unionSize;
     return sizedUnion;
 }
-
 
 Poly* add(Poly* poly1, Poly* poly2) {
     IType unionSize;
@@ -167,4 +170,27 @@ Poly* unsub(Poly* poly) {
 
 Poly* sub(Poly* poly1, Poly* poly2) {
     return add(poly1, unsub(poly2));
+}
+
+Poly* mul(Poly* poly1, Poly* poly2, DType number) {
+    if (poly1 == NULL) {
+        poly1 = createNewPoly(1);
+        insert(0, 1, poly1);
+    }
+    if (poly2 == NULL) {
+        poly2 = createNewPoly(1);
+        insert(0, 1, poly2);
+    }
+    IType degree, degree1, degree2;
+    Poly* newPoly = createNewPoly(poly1->count + poly2->count);
+    for (IType i = 0; i < poly1->count; i++) {
+        degree1 = poly1->sortedDegrees[i];
+        for (IType j = 0; j < poly2->count; j++) {
+            degree2 = poly2->sortedDegrees[j];
+            degree = degree1 + degree2;
+            insert(degree, 0, newPoly);
+            search(degree, newPoly)->coefficient += number * search(degree1, poly1)->coefficient * search(degree2, poly2)->coefficient;
+        }
+    }
+    return newPoly;
 }
