@@ -46,6 +46,12 @@ IType test_add(Poly* poly1, Poly* poly2) {
 }
 
 IType test_unsub(Poly* poly) {
-    display(unsub(poly));
+    Poly* temp = unsub(poly);
+    IType degree;
+    display(temp);
+    for (IType c = 0; c < poly->count; c++) {
+        degree = poly->sortedDegrees[c];
+        printf("%.1f, ", search(degree, temp)->coefficient);
+    }
     return 0;
 }

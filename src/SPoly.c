@@ -84,19 +84,20 @@ void insert(IType degree, DType coefficient, Poly* poly) {
 }
 
 void display(Poly* poly) {
-    IType i = 0;
+    IType i = 0, degree;
+    DType coefficient;
     for(i = poly->count - 1; i > -1; i--) {
-        IType degree = poly->sortedDegrees[i];
-        printf("%.1f", search(degree, poly)->coefficient);
+        degree = poly->sortedDegrees[i];
+        coefficient = search(degree, poly)->coefficient;
+        if (i < poly->count - 1) {
+            printf(coefficient < 0 ? " + " : " - ");
+        }
+        printf("%.1f", (coefficient > 0 || i == poly->count - 1 ? 1 : -1) * coefficient);
         if (degree != 0) {
             printf("*x^%d", degree);
         }
-        if (i > 0) {
-            printf(" + ");
-        } else {
-            printf("\n");
-        }
     }
+    printf("\n");
 }
 
 IType* createUnion(const IType* arr1, const IType* arr2, IType m, IType n, IType* size) {
@@ -161,5 +162,6 @@ Poly* unsub(Poly* poly) {
         degree = poly->sortedDegrees[c];
         insert(degree, -1*search(degree, poly)->coefficient, newPoly);
     }
+    printf("\n");
     return newPoly;
 }
