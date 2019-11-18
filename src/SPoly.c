@@ -260,3 +260,15 @@ DType value(Poly* poly, DType x) {
     }
     return sum;
 }
+
+Poly* derivative(Poly* poly) {
+    Poly* newPoly = createNewPoly(poly->count);
+    IType degree;
+    for (IType c = 0; c < poly->count; c++) {
+        degree = poly->sortedDegrees[c];
+        if (degree != 0) {
+            insert(degree-1, search(degree, poly)->coefficient * degree, newPoly);
+        }
+    }
+    return newPoly;
+}

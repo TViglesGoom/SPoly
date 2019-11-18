@@ -1,5 +1,5 @@
 #include "../headers/SPoly.h"
-#define KEY1 3
+#define KEY1 1
 #define KEY2 4
 #define KEY3 0
 
@@ -11,7 +11,6 @@ IType test_insert(Poly *poly) {
     insert(KEY1, VALUE1, poly);
     insert(KEY2, VALUE2, poly);
     insert(KEY3, VALUE3, poly);
-    insert(9, -4.3, poly);
     return 0;
 }
 
@@ -99,5 +98,12 @@ IType test_mod() {
 
 IType test_value(Poly* poly, DType x) {
     printf("f(x) = %f\n", value(poly, x));
+    return 0;
+}
+
+IType test_derivative(Poly* poly) {
+    display(poly);
+    display(derivative(poly));
+    display(derivative(derivative(poly)));
     return 0;
 }

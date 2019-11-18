@@ -17,5 +17,6 @@ int main() {
 //    printf("test divide - %d\n\n", test_divide());
 //    printf("test mod - %d\n\n", test_mod());
     printf("test value - %d\n\n", test_value(poly1, 2));
+    printf("test derivative - %d\n\n", test_derivative(poly1));
     return 0;
 }

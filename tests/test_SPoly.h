@@ -9,4 +9,5 @@ IType test_mul();
 IType test_divide();
 IType test_mod();
 IType test_value(Poly* poly, DType x);
+IType test_derivative(Poly* poly);
 #endif //TEST_SPOLY_H
