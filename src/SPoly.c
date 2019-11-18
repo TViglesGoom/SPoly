@@ -1,6 +1,5 @@
 #include "../headers/SPoly.h"
 
-
 Poly* createNewPoly(IType size) {
     Poly* newPoly = malloc(sizeof(Poly));
     newPoly->size = size;
@@ -98,8 +97,15 @@ void display(Poly* poly) {
         }
         printf("%.1f", (coefficient > 0 || i == poly->count - 1 ? 1 : -1) * coefficient);
         if (degree != 0) {
-            printf("*x^%d", degree);
+            if (degree == 1) {
+                printf("*x");
+            } else {
+                printf("*x^%d", degree);
+            }
         }
+    }
+    if (poly->count == 0) {
+        printf("0");
     }
     printf("\n");
 }
