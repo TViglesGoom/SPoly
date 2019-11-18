@@ -107,3 +107,9 @@ IType test_derivative(Poly* poly) {
     display(derivative(derivative(poly)));
     return 0;
 }
+
+IType test_integral(Poly* poly, DType C) {
+    display(derivative(integral(poly, C)));
+    display(integral(poly, C));
+    return 0;
+}

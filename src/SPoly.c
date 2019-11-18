@@ -272,3 +272,16 @@ Poly* derivative(Poly* poly) {
     }
     return newPoly;
 }
+
+Poly* integral(Poly* poly, DType C) {
+    Poly* newPoly = createNewPoly(poly->count + (C == 0 ? 0 : 1));
+    IType degree;
+    for (IType c = 0; c < poly->count; c++) {
+        degree = poly->sortedDegrees[c];
+        insert(degree+1, search(degree, poly)->coefficient / (degree + 1), newPoly);
+    }
+    if (C != 0) {
+        insert(0, C, newPoly);
+    }
+    return newPoly;
+}
