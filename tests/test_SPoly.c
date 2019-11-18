@@ -1,6 +1,6 @@
 #include "../headers/SPoly.h"
-#define KEY1 35
-#define KEY2 102
+#define KEY1 3
+#define KEY2 4
 #define KEY3 0
 
 #define VALUE1 5
@@ -94,5 +94,10 @@ IType test_mod() {
     insert(1, 1, poly2);
     insert(0, -2, poly2);
     display(mod(poly1, poly2, 1));
+    return 0;
+}
+
+IType test_value(Poly* poly, DType x) {
+    printf("f(x) = %f\n", value(poly, x));
     return 0;
 }

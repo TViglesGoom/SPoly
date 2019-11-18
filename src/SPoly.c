@@ -248,3 +248,15 @@ Poly* mod(Poly* poly1, Poly* poly2, DType number) {
     return divideAlgorithm(poly1, poly2, number, 0);
 }
 
+DType value(Poly* poly, DType x) {
+    DType sum = 0, xPowed = 1;
+    PolyElem* elem;
+    for (IType c = 0; c <= poly->sortedDegrees[poly->count-1]; c++) {
+        elem = search(c, poly);
+        if (elem != NULL) {
+            sum += elem->coefficient * xPowed;
+        }
+        xPowed *= x;
+    }
+    return sum;
+}

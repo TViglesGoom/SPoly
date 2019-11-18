@@ -8,4 +8,5 @@ IType test_sub(Poly* poly1, Poly* poly2);
 IType test_mul();
 IType test_divide();
 IType test_mod();
+IType test_value(Poly* poly, DType x);
 #endif //TEST_SPOLY_H
