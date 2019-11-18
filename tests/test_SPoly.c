@@ -113,3 +113,8 @@ IType test_integral(Poly* poly, DType C) {
     display(integral(poly, C));
     return 0;
 }
+
+IType test_integrate(Poly* poly, DType a, DType b) {
+    printf("integrate - %f\n", integrate(poly, a, b));
+    return 0;
+}

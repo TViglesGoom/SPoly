@@ -11,4 +11,5 @@ IType test_mod();
 IType test_value(Poly* poly, DType x);
 IType test_derivative(Poly* poly);
 IType test_integral(Poly* poly, DType C);
+IType test_integrate(Poly* poly, DType a, DType b);
 #endif //TEST_SPOLY_H

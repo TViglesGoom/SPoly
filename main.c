@@ -16,8 +16,9 @@ int main() {
 //    printf("test mul - %d\n\n", test_mul());
 //    printf("test divide - %d\n\n", test_divide());
 //    printf("test mod - %d\n\n", test_mod());
-//    printf("test value - %d\n\n", test_value(poly1, 2));
+    printf("test value - %d\n\n", test_value(poly1, 1));
 //    printf("test derivative - %d\n\n", test_derivative(poly1));
-    printf("test integral - %d\n\n", test_integral(poly1, -3));
+//    printf("test integral - %d\n\n", test_integral(poly1, -3));
+    printf("test integrate - %d\n\n", test_integrate(poly1, 0, 1));
     return 0;
 }

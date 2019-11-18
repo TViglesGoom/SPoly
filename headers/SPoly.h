@@ -43,6 +43,6 @@ Poly* unsub(Poly* poly);
 DType value(Poly* poly, DType x);
 Poly* derivative(Poly* poly);
 Poly* integral(Poly* poly, DType C);
-DType integrate(Poly* p, DType a, DType b);
+DType integrate(Poly* poly, DType a, DType b);
 
 #endif //SPOLY

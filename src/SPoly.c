@@ -285,3 +285,8 @@ Poly* integral(Poly* poly, DType C) {
     }
     return newPoly;
 }
+
+DType integrate(Poly* poly, DType a, DType b) {
+    Poly* newPoly = integral(poly, 0);
+    return value(newPoly, b) - value(newPoly, a);
+}
