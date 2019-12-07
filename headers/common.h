@@ -43,9 +43,9 @@ typedef struct DPoint_
 
 typedef struct DLine_
 {
-    DType a;
-    DType b;
-    DType c;
+    DType x1;
+    DType x2;
+    DType dx;
 } DLine;
 
 

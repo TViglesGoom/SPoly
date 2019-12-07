@@ -95,7 +95,7 @@ void display(Poly* poly) {
         if (i < poly->count - 1) {
             printf(coefficient > 0 ? " + " : " - ");
         }
-        printf("%.1f", (coefficient > 0 || i == poly->count - 1 ? 1 : -1) * coefficient);
+        printf("%.2f", (coefficient > 0 || i == poly->count - 1 ? 1 : -1) * coefficient);
         if (degree != 0) {
             if (degree == 1) {
                 printf("*x");
@@ -214,6 +214,7 @@ Poly* divideAlgorithm(Poly *poly1, Poly *poly2, DType number, IType flag) {
         IType tempDegree, poly2Degree, resDegree;
         DType resCoefficient;
         tempDegree = temp->sortedDegrees[temp->count - 1];
+        tempDegree = temp->sortedDegrees[temp->count - 1];
         poly2Degree = poly2->sortedDegrees[poly2->count - 1];
         while (tempDegree >= poly2Degree) {
             resDegree = tempDegree - poly2Degree;
@@ -289,4 +290,75 @@ Poly* integral(Poly* poly, DType C) {
 DType integrate(Poly* poly, DType a, DType b) {
     Poly* newPoly = integral(poly, 0);
     return value(newPoly, b) - value(newPoly, a);
+}
+
+Poly* normalize(Poly* poly) {
+    Poly* newPoly = createNewPoly(poly->count);
+    DType firstCoefficient = search(poly->sortedDegrees[poly->count - 1], poly)->coefficient;
+    for (IType c = 0; c < poly->count; c++) {
+        insert(poly->sortedDegrees[c],
+               search(poly->sortedDegrees[c], poly)->coefficient / firstCoefficient,
+               newPoly);
+    }
+    return newPoly;
+}
+
+int inLine(DType x, DLine line) {
+    return line.x1 <= x && x <= line.x2;
+}
+
+DType* polyRealRoots (Poly* poly, IType* rootsCount, DLine line) {
+    poly = normalize(poly);
+    DType* roots = malloc(sizeof(DType) * poly->sortedDegrees[poly->count-1]);
+    PolyElem* zeroDeg = search(0, poly);
+    PolyElem* oneDeg = search(1, poly);
+    if (poly->count <= 2 && oneDeg != NULL) {
+        if (zeroDeg == NULL && poly->count == 1 && inLine(0, line)) roots[(*rootsCount)++] = 0;
+        else {
+            DType root = (oneDeg->coefficient < 0 ? 1 : -1) * zeroDeg->coefficient;
+            if (inLine(root, line)) roots[(*rootsCount)++] = root;
+        }
+        return roots;
+    }
+    IType derivativeRootsCount = 0;
+    DType* derivativeRoots = polyRealRoots(derivative(poly), &derivativeRootsCount, line);
+    DType* intervals = malloc(sizeof(DType) * (derivativeRootsCount + 2));
+    intervals[0] = line.x1;
+    intervals[derivativeRootsCount+1] = line.x2;
+    for (int i = 1; i < derivativeRootsCount+1; i++) {
+        intervals[i] = derivativeRoots[i-1];
+    }
+    if (fabs(value(poly, intervals[0])) < line.dx) {
+        roots[(*rootsCount)++] = intervals[0];
+    }
+    int flag = 0;
+    for (int i = 0; i < derivativeRootsCount + 1; i++) {
+        if (flag) {
+            flag = 0;
+            continue;
+        }
+        DType leftSide = intervals[i];
+        DType rightSide = intervals[i+1];
+        if (fabs(value(poly, rightSide)) < line.dx) {
+            roots[(*rootsCount)++] = rightSide;
+            flag = 1;
+            continue;
+        }
+        if (value(poly, intervals[i])*value(poly, intervals[i+1]) < 0) {
+            DType root;
+            DType rootValue;
+            do {
+                root = (leftSide + rightSide) / 2.0;
+                rootValue = value(poly, root);
+                if (rootValue * value(poly, leftSide) < 0) {
+                    rightSide = root;
+                } else {
+                    leftSide = root;
+                }
+            } while (fabs(rootValue) > line.dx && fabs(leftSide - rightSide) > 0.000000001);
+            roots[(*rootsCount)++] = root;
+        }
+    }
+    free(intervals);
+    return roots;
 }

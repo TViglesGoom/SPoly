@@ -69,6 +69,7 @@ IType test_mul() {
     display(mul(poly2, NULL, -5));
     display(mul(NULL, NULL, -5));
     printf("\n\n");
+    return 0;
 }
 
 IType test_divide() {
@@ -116,5 +117,48 @@ IType test_integral(Poly* poly, DType C) {
 
 IType test_integrate(Poly* poly, DType a, DType b) {
     printf("integrate - %f\n", integrate(poly, a, b));
+    return 0;
+}
+
+IType test_normalize() {
+    DType coefficients[7] = {4, -3, 6, 8, 4, 7, -4};
+    DType expectedCoefficients[7] = {1, -0.75, 1.5, 2, 1, 1.75, -1};
+    IType degrees[7] = {54, 34, 76, 4, 78, 3, 6};
+    Poly* poly = createNewPoly(7);
+    for (IType c = 0; c < 8; c++) {
+        insert(degrees[c], coefficients[c], poly);
+    }
+    poly = normalize(poly);
+    for (IType c = 0; c < poly->count; c++) {
+        if (search(degrees[c], poly)->coefficient - expectedCoefficients[c] > 0.00001) {
+            return -10;
+        }
+    }
+    return 0;
+}
+
+
+IType test_polyRealRoots() {
+    Poly* poly = createNewPoly(10);
+    DLine line;
+    line.x1 = -100;
+    line.x2 = 100;
+    line.dx = 0.00001;
+    insert(9, 1, poly);
+    insert(8, -138, poly);
+    insert(7, 3971, poly);
+    insert(6, -1238, poly);
+    insert(5, -381060, poly);
+    insert(4, 1141784, poly);
+    insert(3, 9266208, poly);
+    insert(2, -32916096, poly);
+    insert(1, -68193792, poly);
+    insert(0, 243855360, poly);
+    IType rootsCount = 0;
+    DType testRoots[7] = {-8, -4, 3, 5, 6, 36, 98};
+    DType* roots = polyRealRoots(poly, &rootsCount, line);
+    for (int i = 0; i < rootsCount; ++i) {
+        if (roots[i] - testRoots[i] > line.dx) return -20;
+    }
     return 0;
 }
