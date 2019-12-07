@@ -21,7 +21,13 @@ int main() {
 //    printf("test integral - %d\n\n", test_integral(poly1, -3));
 //    printf("test integrate - %d\n\n", test_integrate(poly1, 0, 1));
 //    printf("test normalize - %d\n\n", test_normalize());
-    printf("test realPolyRoots - %d\n\n", test_polyRealRoots());
+//    printf("test realPolyRoots - %d\n\n", test_polyRealRoots());
+    Poly* poly1 = createNewPoly(4);
+    insert(2, 4.5, poly1);
+    Poly* poly2 = createNewPoly(4);
+    insert(2, 4, poly2);
+    insert(1, 2, poly2);
+    moduleAdd(poly1, poly2, 7);
 
     return 0;
 }

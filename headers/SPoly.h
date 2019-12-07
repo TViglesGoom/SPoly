@@ -25,6 +25,7 @@ IType hashCode(IType degree, IType size);
 PolyElem* search(IType degree, Poly* poly);
 void insertDegree(IType degree, Poly* poly);
 void insert(IType degree, DType coefficient, Poly* poly);
+void delete(PolyElem* el, Poly* poly);
 void display();
 
 Poly* add(Poly* poly1, Poly* poly2);
@@ -48,5 +49,8 @@ Poly* normalize(Poly* poly);
 int inLine(DType x, DLine line);
 
 DType* polyRealRoots (Poly* poly, IType* rootsCount, DLine line);
+Poly* takeModuleCoefs(Poly* poly, IType module);
+Poly* moduleAdd(Poly* poly1, Poly* poly2, IType module);
+Poly* moduleMul(Poly* poly1, Poly* poly2, IType module);
 
 #endif //SPOLY

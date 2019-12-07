@@ -86,6 +86,25 @@ void insert(IType degree, DType coefficient, Poly* poly) {
     poly->elements[hashIndex] = item;
 }
 
+void delete(PolyElem* el, Poly* poly) {
+    for (int i = 0; i < poly->count; i++) {
+        if (poly->elements[i] == el) {
+            poly->elements[i] = NULL;
+            IType index = -1;
+            for (int j = 0; j < poly->count; j++) {
+                if (poly->sortedDegrees[j] == el->degree) {
+                    index = j;
+                    break;
+                }
+            }
+            poly->count--;
+            for (; index < poly->count; index++) {
+                poly->sortedDegrees[index] = poly->sortedDegrees[index+1];
+            }
+        }
+    }
+}
+
 void display(Poly* poly) {
     IType i = 0, degree;
     DType coefficient;
@@ -362,3 +381,25 @@ DType* polyRealRoots (Poly* poly, IType* rootsCount, DLine line) {
     free(intervals);
     return roots;
 }
+
+Poly* takeModuleCoefs(Poly* poly, IType module) {
+    Poly* newPoly = createNewPoly(poly->count);
+    for (IType i = 0; i < poly->count; i++) {
+        PolyElem* el = search(poly->sortedDegrees[i], newPoly);
+        if (el->coefficient >= module) {
+            insert(el->degree, el->coefficient - floor(el->coefficient / module) * module, newPoly);
+        }
+        while (el->coefficient < 0) {
+            insert(el->degree, el->coefficient + module, newPoly);
+        }
+    }
+}
+
+Poly* moduleAdd(Poly* poly1, Poly* poly2, IType module) {
+    return takeModuleCoefs(add(poly1, poly2), module);
+}
+
+Poly* moduleMul(Poly* poly1, Poly* poly2, IType module) {
+    return takeModuleCoefs(mul(poly1, poly2), module);
+}
+
