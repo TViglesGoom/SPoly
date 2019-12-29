@@ -1,4 +1,5 @@
 #include "../headers/SPoly.h"
+
 #define KEY1 1
 #define KEY2 4
 #define KEY3 0
@@ -6,6 +7,7 @@
 #define VALUE1 5
 #define VALUE2 -8
 #define VALUE3 3
+
 
 IType test_insert(Poly *poly) {
     insert(KEY1, VALUE1, poly);
@@ -35,28 +37,28 @@ IType test_search(Poly *poly) {
     return 0;
 }
 
-IType test_add(Poly* poly1, Poly* poly2) {
+IType test_add(Poly *poly1, Poly *poly2) {
     if (poly2->sortedDegrees[0] != 0) {
         insert(0, -3, poly2);
     }
     insert(KEY1, VALUE2, poly2);
-    display(add(poly1, poly2));
+    add(poly1, poly2);
     return 0;
 }
 
-IType test_unsub(Poly* poly) {
-    display(unsub(poly));
+IType test_unsub(Poly *poly) {
+    unsub(poly);
     return 0;
 }
 
-IType test_sub(Poly* poly1, Poly* poly2) {
-    display(sub(poly1, poly2));
+IType test_sub(Poly *poly1, Poly *poly2) {
+    sub(poly1, poly2);
     return 0;
 }
 
 IType test_mul() {
-    Poly* poly1 = createNewPoly(2);
-    Poly* poly2 = createNewPoly(3);
+    Poly *poly1 = createNewPoly(2);
+    Poly *poly2 = createNewPoly(3);
     insert(0, 3, poly1);
     insert(2, 2, poly1);
     insert(7, 4, poly2);
@@ -73,49 +75,49 @@ IType test_mul() {
 }
 
 IType test_divide() {
-    Poly* poly1 = createNewPoly(3);
+    Poly *poly1 = createNewPoly(2);
     insert(2, 1, poly1);
 //    insert(1, 4, poly1);
-    insert(0, 4, poly1);
-    Poly* poly2 = createNewPoly(2);
+    insert(0, -4, poly1);
+    Poly *poly2 = createNewPoly(2);
     insert(1, 1, poly2);
-    insert(0, 2, poly2);
+    insert(0, -2, poly2);
     display(divide(poly1, poly2, 2));
     display(divide(poly1, NULL, 2));
     return 0;
 }
 
 IType test_mod() {
-    Poly* poly1 = createNewPoly(3);
+    Poly *poly1 = createNewPoly(3);
     insert(2, 1, poly1);
     insert(1, 4, poly1);
     insert(0, 4, poly1);
-    Poly* poly2 = createNewPoly(2);
+    Poly *poly2 = createNewPoly(2);
     insert(1, 1, poly2);
     insert(0, -2, poly2);
     display(mod(poly1, poly2, 1));
     return 0;
 }
 
-IType test_value(Poly* poly, DType x) {
+IType test_value(Poly *poly, DType x) {
     printf("f(x) = %f\n", value(poly, x));
     return 0;
 }
 
-IType test_derivative(Poly* poly) {
+IType test_derivative(Poly *poly) {
     display(poly);
     display(derivative(poly));
     display(derivative(derivative(poly)));
     return 0;
 }
 
-IType test_integral(Poly* poly, DType C) {
+IType test_integral(Poly *poly, DType C) {
     display(derivative(integral(poly, C)));
     display(integral(poly, C));
     return 0;
 }
 
-IType test_integrate(Poly* poly, DType a, DType b) {
+IType test_integrate(Poly *poly, DType a, DType b) {
     printf("integrate - %f\n", integrate(poly, a, b));
     return 0;
 }
@@ -124,7 +126,7 @@ IType test_normalize() {
     DType coefficients[7] = {4, -3, 6, 8, 4, 7, -4};
     DType expectedCoefficients[7] = {1, -0.75, 1.5, 2, 1, 1.75, -1};
     IType degrees[7] = {54, 34, 76, 4, 78, 3, 6};
-    Poly* poly = createNewPoly(7);
+    Poly *poly = createNewPoly(7);
     for (IType c = 0; c < 8; c++) {
         insert(degrees[c], coefficients[c], poly);
     }
@@ -139,7 +141,7 @@ IType test_normalize() {
 
 
 IType test_polyRealRoots() {
-    Poly* poly = createNewPoly(10);
+    Poly *poly = createNewPoly(10);
     DLine line;
     line.x1 = -100;
     line.x2 = 100;
@@ -156,9 +158,28 @@ IType test_polyRealRoots() {
     insert(0, 243855360, poly);
     IType rootsCount = 0;
     DType testRoots[7] = {-8, -4, 3, 5, 6, 36, 98};
-    DType* roots = polyRealRoots(poly, &rootsCount, line);
+    DType *roots = polyRealRoots(poly, &rootsCount, line);
     for (int i = 0; i < rootsCount; ++i) {
         if (roots[i] - testRoots[i] > line.dx) return -20;
     }
     return 0;
+}
+
+void MAIN_TEST() {
+    Poly *poly1 = createNewPoly(4);
+    printf("test insert - %d\n", test_insert(poly1));
+    printf("test search - %d\n", test_search(poly1));
+    Poly *poly2 = generate(6, 4);
+    printf("test add - %d\n", test_add(poly1, poly2));
+    printf("test unsub - %d\n", test_unsub(poly1));
+    printf("test sub - %d\n", test_sub(poly1, poly2));
+    printf("test mul - %d\n\n", test_mul());
+    printf("test divide - %d\n\n", test_divide());
+    printf("test mod - %d\n\n", test_mod());
+    printf("test value - %d\n\n", test_value(poly1, 1));
+    printf("test derivative - %d\n\n", test_derivative(poly1));
+    printf("test integral - %d\n\n", test_integral(poly1, -3));
+    printf("test integrate - %d\n\n", test_integrate(poly1, 0, 1));
+    printf("test normalize - %d\n\n", test_normalize());
+    printf("test realPolyRoots - %d\n\n", test_polyRealRoots());
 }

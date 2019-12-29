@@ -1,5 +1,6 @@
 #ifndef TEST_SPOLY_H
 #define TEST_SPOLY_H
+void MAIN_TEST();
 IType test_insert(Poly *poly);
 IType test_search(Poly *poly);
 IType test_add(Poly* poly1, Poly* poly2);

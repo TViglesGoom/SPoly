@@ -1,39 +1,73 @@
 #include "../headers/SPoly.h"
 
-Poly* createNewPoly(IType size) {
-    Poly* newPoly = malloc(sizeof(Poly));
+
+/* Выделение памяти под новый полином */
+Poly *createNewPoly(IType size) {
+    Poly *newPoly = malloc(sizeof(Poly));
     newPoly->size = size;
     newPoly->count = 0;
-    newPoly->elements = calloc(size, sizeof(PolyElem*));
-    newPoly->sortedDegrees = malloc(size*sizeof(IType));
+    newPoly->elements = calloc(size, sizeof(PolyElem *));
+    newPoly->sortedDegrees = malloc(size * sizeof(IType));
     return newPoly;
 }
 
-Poly* generate(size_t n, size_t m) {
+
+/* Генерация случайного полинома с количеством максимальным количеством элементов n
+ * и реальным количеством m */
+Poly *generate(size_t n, size_t m) {
     if (n < m) {
         n = m;
     }
-    Poly* poly = createNewPoly((IType)n);
-    srand (time(NULL));
-    for (size_t c = 1; c <= m; c++)
-    {
-        insert(rand() % 100, (DType)(rand() % 100 - 50), poly);
+    Poly *poly = createNewPoly((IType) n);
+    srand(time(NULL));
+    for (size_t c = 1; c <= m; c++) {
+        insert(rand() % 100, (DType) (rand() % 100 - 50), poly);
     }
     return poly;
 }
 
+
+/* Создание полинома из строки,
+ * полином должен иметь вид an*x^n + an-1*x^(n-1) + ... + a0*x^0,
+ * где an != 0, для всех n >= 0 */
+IType inputFromString(Poly *poly, char *str) {
+    IType countX = 0;
+    DType doubleCoef;
+    IType intDeg;
+    for (unsigned i = 0; i < strlen(str); i++) {
+        if (str[i] == 'x') countX++;
+    }
+    poly = createNewPoly(countX);
+    IType i = 0;
+    while (i < strlen(str)) {
+        char *coef = "";
+        char *deg = "";
+        char *coefEnd;
+        char *degEnd;
+        if (str[i] == 'x') {
+            doubleCoef = strtod(coef, &coefEnd);
+        }
+        if (str[i] == ' ' && str[i - 1] != '+') {
+
+        }
+    }
+}
+
+/* Функция для взятия хешкода степени */
 IType hashCode(IType degree, IType size) {
     return degree % size;
 }
 
-PolyElem* search(IType degree, Poly *poly) {
+
+/* Поиск элемента PolyElem по его степени degree в полиноме poly */
+PolyElem *search(IType degree, Poly *poly) {
     //get the hash
     IType hashIndex = hashCode(degree, poly->size);
     IType counter = 0;
     //move in array until an empty
-    while(poly->elements[hashIndex] != NULL && counter <= poly->count) {
+    while (poly->elements[hashIndex] != NULL && counter <= poly->count) {
 
-        if(poly->elements[hashIndex]->degree == degree)
+        if (poly->elements[hashIndex]->degree == degree)
             return poly->elements[hashIndex];
         //go to next cell
         ++hashIndex;
@@ -45,7 +79,9 @@ PolyElem* search(IType degree, Poly *poly) {
     return NULL;
 }
 
-void insertDegree(IType degree, Poly* poly) {
+
+/* Вставка степени в массив элементов полинома */
+void insertDegree(IType degree, Poly *poly) {
     IType sortedIndex = poly->count;
     for (IType i = 0; i < poly->count; i++) {
         if (poly->sortedDegrees[i] > degree) {
@@ -54,16 +90,20 @@ void insertDegree(IType degree, Poly* poly) {
         }
     }
     for (IType i = poly->count; i > sortedIndex; i--) {
-        poly->sortedDegrees[i] = poly->sortedDegrees[i-1];
+        poly->sortedDegrees[i] = poly->sortedDegrees[i - 1];
     }
     poly->sortedDegrees[sortedIndex] = degree;
 }
 
-void insert(IType degree, DType coefficient, Poly* poly) {
+
+/* Вставка элемента по его степени и коэфициенту */
+void insert(IType degree, DType coefficient, Poly *poly) {
+    /* Если достигнуто максимальное количество элементов, выходим */
     if (poly->count >= poly->size) {
 //        printf("MAX POLY SIZE REACHED");
         return;
     }
+    /* Если уже есть элемент с такой же степенью в полиноме, выходим */
     if (search(degree, poly) != NULL) {
 //        printf("ELEMENT WITH THIS DEGREE ALREADY IS IN POLY");
         return;
@@ -72,13 +112,11 @@ void insert(IType degree, DType coefficient, Poly* poly) {
     item->coefficient = coefficient;
     item->degree = degree;
     insertDegree(degree, poly);
-    //get the hash
+    /* Получаем хеш */
     IType hashIndex = hashCode(degree, poly->size);
-    //move in array until an empty or deleted cell
-    while(poly->elements[hashIndex] != NULL) {
-        //go to next cell
+    /* Двигаемся по массиву (по кругу), пока не встретим пустую ячейку */
+    while (poly->elements[hashIndex] != NULL) {
         ++hashIndex;
-        //wrap around the table
         hashIndex %= poly->size;
 
     }
@@ -86,9 +124,13 @@ void insert(IType degree, DType coefficient, Poly* poly) {
     poly->elements[hashIndex] = item;
 }
 
-void delete(PolyElem* el, Poly* poly) {
+
+/* Удаление элемента el из полинома poly */
+void delete(PolyElem *el, Poly *poly) {
     for (int i = 0; i < poly->count; i++) {
         if (poly->elements[i] == el) {
+            /* Элемент делаем NULL, уменьшаем count и смещаем все степени после удалённой на 1 индекс влево,
+             * сохраняя при этом отсортированность */
             poly->elements[i] = NULL;
             IType index = -1;
             for (int j = 0; j < poly->count; j++) {
@@ -99,16 +141,18 @@ void delete(PolyElem* el, Poly* poly) {
             }
             poly->count--;
             for (; index < poly->count; index++) {
-                poly->sortedDegrees[index] = poly->sortedDegrees[index+1];
+                poly->sortedDegrees[index] = poly->sortedDegrees[index + 1];
             }
         }
     }
 }
 
-void display(Poly* poly) {
+
+/* Вывод в консоль полинома */
+void display(Poly *poly) {
     IType i = 0, degree;
     DType coefficient;
-    for(i = poly->count - 1; i > -1; i--) {
+    for (i = poly->count - 1; i > -1; i--) {
         degree = poly->sortedDegrees[i];
         coefficient = search(degree, poly)->coefficient;
         if (i < poly->count - 1) {
@@ -129,9 +173,12 @@ void display(Poly* poly) {
     printf("\n");
 }
 
-IType* createUnion(const IType* arr1, const IType* arr2, IType m, IType n, IType* size) {
-    IType* unionOfArrays = malloc((m+n) * sizeof(IType));
+
+/* Нахождение всех степеней полинома */
+IType *createUnion(const IType *arr1, const IType *arr2, IType m, IType n, IType *size) {
+    IType *unionOfArrays = malloc((m + n) * sizeof(IType));
     IType i = 0, j = 0, unionSize = 0;
+    /* Объединение двух множеств */
     while (i < m && j < n) {
         if (arr1[i] < arr2[j])
             unionOfArrays[unionSize++] = arr1[i++];
@@ -143,11 +190,11 @@ IType* createUnion(const IType* arr1, const IType* arr2, IType m, IType n, IType
         }
     }
     /* Print remaining elements of the larger array */
-    while(i < m)
+    while (i < m)
         unionOfArrays[unionSize++] = arr1[i++];
-    while(j < n)
+    while (j < n)
         unionOfArrays[unionSize++] = arr2[j++];
-    IType* sizedUnion = malloc(unionSize* sizeof(IType));
+    IType *sizedUnion = malloc(unionSize * sizeof(IType));
     for (IType ind = 0; ind < unionSize; ind++) {
         sizedUnion[ind] = unionOfArrays[ind];
     }
@@ -156,15 +203,21 @@ IType* createUnion(const IType* arr1, const IType* arr2, IType m, IType n, IType
     return sizedUnion;
 }
 
-Poly* add(Poly* poly1, Poly* poly2) {
+
+/* Сложение полиномов */
+Poly *add(Poly *poly1, Poly *poly2) {
     IType unionSize;
-    IType* tempArray = createUnion(poly1->sortedDegrees, poly2->sortedDegrees,
-            poly1->count, poly2->count, &unionSize);
-    Poly* newPoly = createNewPoly(unionSize);
+    /* Находим все степени нового полинома */
+    IType *tempArray = createUnion(poly1->sortedDegrees, poly2->sortedDegrees,
+                                   poly1->count, poly2->count, &unionSize);
+    Poly *newPoly = createNewPoly(unionSize);
     newPoly->sortedDegrees = tempArray;
-    PolyElem* elem;
+    PolyElem *elem;
     IType degree;
     DType sum;
+    /* Складываем коэффициенты соответствующих степеней в полиномах
+     * Если в каком-то из полиномов не присутствует какая-либо степень, то возвращается NULL
+     * В таком случае просто не прибавляем к нашей сумме ничего */
     for (IType c = 0; c < unionSize; c++) {
         sum = 0;
         degree = newPoly->sortedDegrees[c];
@@ -183,21 +236,27 @@ Poly* add(Poly* poly1, Poly* poly2) {
     return newPoly;
 }
 
-Poly* unsub(Poly* poly) {
-    Poly* newPoly = createNewPoly(poly->count);
+
+/* Унарный минус для полинома */
+Poly *unsub(Poly *poly) {
+    Poly *newPoly = createNewPoly(poly->count);
     IType degree;
     for (IType c = 0; c < poly->count; c++) {
         degree = poly->sortedDegrees[c];
-        insert(degree, -1*search(degree, poly)->coefficient, newPoly);
+        insert(degree, -1 * search(degree, poly)->coefficient, newPoly);
     }
     return newPoly;
 }
 
-Poly* sub(Poly* poly1, Poly* poly2) {
+
+/* Вычитание полиномов */
+Poly *sub(Poly *poly1, Poly *poly2) {
     return add(poly1, unsub(poly2));
 }
 
-Poly* mul(Poly* poly1, Poly* poly2, DType number) {
+
+/* Умножение полиномов */
+Poly *mul(Poly *poly1, Poly *poly2, DType number) {
     if (poly1 == NULL) {
         poly1 = createNewPoly(1);
         insert(0, 1, poly1);
@@ -207,32 +266,38 @@ Poly* mul(Poly* poly1, Poly* poly2, DType number) {
         insert(0, 1, poly2);
     }
     IType degree, degree1, degree2;
-    Poly* newPoly = createNewPoly(poly1->count + poly2->count);
+    /* Выделяем память не меньше необходимого, но может быть и больше */
+    Poly *newPoly = createNewPoly(poly1->count + poly2->count);
     for (IType i = 0; i < poly1->count; i++) {
         degree1 = poly1->sortedDegrees[i];
         for (IType j = 0; j < poly2->count; j++) {
             degree2 = poly2->sortedDegrees[j];
             degree = degree1 + degree2;
             insert(degree, 0, newPoly);
-            search(degree, newPoly)->coefficient += number * search(degree1, poly1)->coefficient * search(degree2, poly2)->coefficient;
+            search(degree, newPoly)->coefficient +=
+                    number * search(degree1, poly1)->coefficient * search(degree2, poly2)->coefficient;
         }
     }
     return newPoly;
 }
 
-Poly* divideAlgorithm(Poly *poly1, Poly *poly2, DType number, IType flag) {
+
+/* Алгоритм деления полинома на полином */
+Poly *divideAlgorithm(Poly *poly1, Poly *poly2, DType number, IType flag) {
     if (poly1 == NULL) {
         return NULL;
     }
     if (poly2 != NULL) {
+        /* Обычный алгоритм деления полинома на полином */
         Poly *temp = createNewPoly(poly1->size);
         memcpy(temp, poly1, sizeof(Poly));
+        /* Предполагаем, что новый массив будет не больше степени, чем разница наибольшей степени первого
+         * и наибольшей степени второго, из чего следует наибольшее количество элементов итогового полинома */
         Poly *result = createNewPoly(
                 poly1->sortedDegrees[poly1->count - 1] - poly2->sortedDegrees[poly2->count - 1] + 1);
 
         IType tempDegree, poly2Degree, resDegree;
         DType resCoefficient;
-        tempDegree = temp->sortedDegrees[temp->count - 1];
         tempDegree = temp->sortedDegrees[temp->count - 1];
         poly2Degree = poly2->sortedDegrees[poly2->count - 1];
         while (tempDegree >= poly2Degree) {
@@ -253,25 +318,31 @@ Poly* divideAlgorithm(Poly *poly1, Poly *poly2, DType number, IType flag) {
         if (flag) {
             return mul(poly1, NULL, 1 / number);
         }
-        Poly* mod = createNewPoly(1);
+        Poly *mod = createNewPoly(1);
         insert(0, 0, mod);
         return mod;
     }
 
 }
 
-Poly* divide(Poly* poly1, Poly* poly2, DType number) {
+
+/* Нахождение полинома, полученного при делении двух данных */
+Poly *divide(Poly *poly1, Poly *poly2, DType number) {
     return divideAlgorithm(poly1, poly2, number, 1);
 }
 
-Poly* mod(Poly* poly1, Poly* poly2, DType number) {
+
+/* Нахождение полинома-остатка, полученного при делении двух данных */
+Poly *mod(Poly *poly1, Poly *poly2, DType number) {
     return divideAlgorithm(poly1, poly2, number, 0);
 }
 
-DType value(Poly* poly, DType x) {
+
+/* Нахождение значения полинома в точке x */
+DType value(Poly *poly, DType x) {
     DType sum = 0, xPowed = 1;
-    PolyElem* elem;
-    for (IType c = 0; c <= poly->sortedDegrees[poly->count-1]; c++) {
+    PolyElem *elem;
+    for (IType c = 0; c <= poly->sortedDegrees[poly->count - 1]; c++) {
         elem = search(c, poly);
         if (elem != NULL) {
             sum += elem->coefficient * xPowed;
@@ -281,24 +352,28 @@ DType value(Poly* poly, DType x) {
     return sum;
 }
 
-Poly* derivative(Poly* poly) {
-    Poly* newPoly = createNewPoly(poly->count);
+
+/* Нахождение производной полинома */
+Poly *derivative(Poly *poly) {
+    Poly *newPoly = createNewPoly(poly->count);
     IType degree;
     for (IType c = 0; c < poly->count; c++) {
         degree = poly->sortedDegrees[c];
         if (degree != 0) {
-            insert(degree-1, search(degree, poly)->coefficient * degree, newPoly);
+            insert(degree - 1, search(degree, poly)->coefficient * degree, newPoly);
         }
     }
     return newPoly;
 }
 
-Poly* integral(Poly* poly, DType C) {
-    Poly* newPoly = createNewPoly(poly->count + (C == 0 ? 0 : 1));
+
+/* Неопределенный интеграл с константой C */
+Poly *integral(Poly *poly, DType C) {
+    Poly *newPoly = createNewPoly(poly->count + (C == 0 ? 0 : 1));
     IType degree;
     for (IType c = 0; c < poly->count; c++) {
         degree = poly->sortedDegrees[c];
-        insert(degree+1, search(degree, poly)->coefficient / (degree + 1), newPoly);
+        insert(degree + 1, search(degree, poly)->coefficient / (degree + 1), newPoly);
     }
     if (C != 0) {
         insert(0, C, newPoly);
@@ -306,13 +381,17 @@ Poly* integral(Poly* poly, DType C) {
     return newPoly;
 }
 
-DType integrate(Poly* poly, DType a, DType b) {
-    Poly* newPoly = integral(poly, 0);
+
+/* Определенный интеграл в промежутке от a до b */
+DType integrate(Poly *poly, DType a, DType b) {
+    Poly *newPoly = integral(poly, 0);
     return value(newPoly, b) - value(newPoly, a);
 }
 
-Poly* normalize(Poly* poly) {
-    Poly* newPoly = createNewPoly(poly->count);
+
+/* Нормирование полинома */
+Poly *normalize(Poly *poly) {
+    Poly *newPoly = createNewPoly(poly->count);
     DType firstCoefficient = search(poly->sortedDegrees[poly->count - 1], poly)->coefficient;
     for (IType c = 0; c < poly->count; c++) {
         insert(poly->sortedDegrees[c],
@@ -322,15 +401,21 @@ Poly* normalize(Poly* poly) {
     return newPoly;
 }
 
+
+/* Проверка нахождения точки в линии */
 int inLine(DType x, DLine line) {
     return line.x1 <= x && x <= line.x2;
 }
 
-DType* polyRealRoots (Poly* poly, IType* rootsCount, DLine line) {
+
+/* Нахождение действительных корней полинома */
+DType *polyRealRoots(Poly *poly, IType *rootsCount, DLine line) {
+    /* Нормализируем полином для избежания больших коэфициэнтов n!*an */
     poly = normalize(poly);
-    DType* roots = malloc(sizeof(DType) * poly->sortedDegrees[poly->count-1]);
-    PolyElem* zeroDeg = search(0, poly);
-    PolyElem* oneDeg = search(1, poly);
+    DType *roots = malloc(sizeof(DType) * poly->sortedDegrees[poly->count - 1]);
+    PolyElem *zeroDeg = search(0, poly);
+    PolyElem *oneDeg = search(1, poly);
+    /* Дошли до степени 1, просто находим корень */
     if (poly->count <= 2 && oneDeg != NULL) {
         if (zeroDeg == NULL && poly->count == 1 && inLine(0, line)) roots[(*rootsCount)++] = 0;
         else {
@@ -340,16 +425,21 @@ DType* polyRealRoots (Poly* poly, IType* rootsCount, DLine line) {
         return roots;
     }
     IType derivativeRootsCount = 0;
-    DType* derivativeRoots = polyRealRoots(derivative(poly), &derivativeRootsCount, line);
-    DType* intervals = malloc(sizeof(DType) * (derivativeRootsCount + 2));
+    /* Находим корни производной, корни нашего полинома будут между концами промежутков монотонности,
+     * если те имеют разные знаки */
+    DType *derivativeRoots = polyRealRoots(derivative(poly), &derivativeRootsCount, line);
+    DType *intervals = malloc(sizeof(DType) * (derivativeRootsCount + 2));
     intervals[0] = line.x1;
-    intervals[derivativeRootsCount+1] = line.x2;
-    for (int i = 1; i < derivativeRootsCount+1; i++) {
-        intervals[i] = derivativeRoots[i-1];
+    intervals[derivativeRootsCount + 1] = line.x2;
+    /* Заполняем массив концов промежутков монотонности */
+    for (int i = 1; i < derivativeRootsCount + 1; i++) {
+        intervals[i] = derivativeRoots[i - 1];
     }
+    /* Если левый конец есть корнем, то добавляем. В дальнейшем проверяются только правые */
     if (fabs(value(poly, intervals[0])) < line.dx) {
         roots[(*rootsCount)++] = intervals[0];
     }
+    /* Нужен для того, чтобы определить, что правый конец был корнем, чтобы избежать повторения корней */
     int flag = 0;
     for (int i = 0; i < derivativeRootsCount + 1; i++) {
         if (flag) {
@@ -357,15 +447,19 @@ DType* polyRealRoots (Poly* poly, IType* rootsCount, DLine line) {
             continue;
         }
         DType leftSide = intervals[i];
-        DType rightSide = intervals[i+1];
+        DType rightSide = intervals[i + 1];
+        /* Проверка, что правый конец является корнем */
         if (fabs(value(poly, rightSide)) < line.dx) {
             roots[(*rootsCount)++] = rightSide;
             flag = 1;
             continue;
         }
-        if (value(poly, intervals[i])*value(poly, intervals[i+1]) < 0) {
+        /* Метод деления пополам */
+        if (value(poly, intervals[i]) * value(poly, intervals[i + 1]) < 0) {
             DType root;
             DType rootValue;
+            root = (leftSide + rightSide) / 2.0;
+
             do {
                 root = (leftSide + rightSide) / 2.0;
                 rootValue = value(poly, root);
@@ -382,10 +476,14 @@ DType* polyRealRoots (Poly* poly, IType* rootsCount, DLine line) {
     return roots;
 }
 
-Poly* takeModuleCoefs(Poly* poly, IType module) {
-    Poly* newPoly = createNewPoly(poly->count);
+
+/* Взятие коэфициэнтов полинома по модулю */
+Poly *takeModuleCoefs(Poly *poly, IType module) {
+    Poly *newPoly = createNewPoly(poly->count);
     for (IType i = 0; i < poly->count; i++) {
-        PolyElem* el = search(poly->sortedDegrees[i], newPoly);
+        PolyElem *el = search(poly->sortedDegrees[i], newPoly);
+        /* Так как нельзя взять по модулю не целое число, то делаем так,
+         * чтобы наш коэфициент попал в промежуток от 0 до module */
         if (el->coefficient >= module) {
             insert(el->degree, el->coefficient - floor(el->coefficient / module) * module, newPoly);
         }
@@ -395,11 +493,15 @@ Poly* takeModuleCoefs(Poly* poly, IType module) {
     }
 }
 
-Poly* moduleAdd(Poly* poly1, Poly* poly2, IType module) {
+
+/* Модульное сложение двух полиномов */
+Poly *moduleAdd(Poly *poly1, Poly *poly2, IType module) {
     return takeModuleCoefs(add(poly1, poly2), module);
 }
 
-Poly* moduleMul(Poly* poly1, Poly* poly2, IType module) {
-    return takeModuleCoefs(mul(poly1, poly2), module);
+
+/* Модульное умножение двух полиномов */
+Poly *moduleMul(Poly *poly1, Poly *poly2, IType module) {
+    return takeModuleCoefs(mul(poly1, poly2, 1), module);
 }
 

@@ -26,6 +26,12 @@ PolyElem* search(IType degree, Poly* poly);
 void insertDegree(IType degree, Poly* poly);
 void insert(IType degree, DType coefficient, Poly* poly);
 void delete(PolyElem* el, Poly* poly);
+IType inputFromString(Poly* poly, char* str);
+IType inputFromConsole(Poly* poly);
+IType inputFromConsoleTable(Poly* poly);
+IType inputFromFile(Poly* poly, const char* filename);
+void outInFile(Poly* poly, const char* filename);
+void outInBinaryFile(Poly* poly, const char* filename);
 void display();
 
 Poly* add(Poly* poly1, Poly* poly2);
